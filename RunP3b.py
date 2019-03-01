@@ -4,7 +4,7 @@ import SimPy.FigureSupport as Fig
 # create a multiple game sets
 multipleGameSets = Cls.MultipleGameSets(ids=range(5000), prob_head=0.5)
 # simulate all game sets
-multipleGameSets.simulate(num_games=10)
+multipleGameSets.simulate(n_games_in_set=10)
 
 # print projected mean reward
 print('Projected mean reward',

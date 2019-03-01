@@ -103,11 +103,11 @@ class MultipleGameSets:
         self.meanGameReward = []
         self.statMeanGameReward = None
 
-    def simulate(self, num_games):
+    def simulate(self, n_games_in_set):
 
         for i in self.ids:
             set_of_games = SetOfGames(id=i, prob_head=self.probHead)
-            set_of_games.simulate(n_games=num_games)
+            set_of_games.simulate(n_games=n_games_in_set)
 
             self.meanGameReward.append(set_of_games.outcomes.get_ave_reward())
 
