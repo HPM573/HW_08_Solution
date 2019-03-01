@@ -1,15 +1,11 @@
 import Classes as Cls
-import SimPy.FigureSupport as Fig
 
-trial = Cls.SetOfGames(id = 1,prob_head= 0.5, n_games=1000)
-test = trial.simulate()
+setOfGames = Cls.SetOfGames(id=0, prob_head=0.5)
+setOfGames.simulate(n_games=10000)
 
-print('Expected reward is', test.get_ave_reward())
-print('The 95% CI of expected reward is', test.get_CI_reward(0.05))
+print('Expected reward is', setOfGames.outcomes.get_ave_reward())
+print('The 95% CI of expected reward is', setOfGames.outcomes.get_CI_reward(0.05))
 
-Fig.graph_histogram(
-    data = trial.get_reward_list(),
-    title = 'Histogram of rewards from 1000 Games obtained from steady state simulation model',
-    x_label='Game Rewards',
-    y_label='Frequency'
-)
+print('We need a steady-state simulation for this perspective.')
+print('We are able to rely on the Law of Large Numbers to make inference.')
+print('This lets us use the sample mean and confidence intervals for interpretation.')

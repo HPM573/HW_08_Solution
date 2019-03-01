@@ -1,15 +1,26 @@
 import Classes as Cls
 import SimPy.FigureSupport as Fig
 
-trial = Cls.SetOfGames(id = 1,prob_head= 0.5, n_games=1000)
-test = trial.simulate()
+# create a multiple game sets
+multipleGameSets = Cls.MultipleGameSets(ids=range(5000), prob_head=0.5)
+# simulate all game sets
+multipleGameSets.simulate(num_games=10)
 
-print('Expected reward is', test.get_ave_reward())
-print('The 95% CI of expected reward is', test.get_CI_reward(0.05))
+# print projected mean reward
+print('Projected mean reward',
+      multipleGameSets.statMeanGameReward.get_mean())
+# print projection interval
+print('95% projection interval of average rewards',
+      multipleGameSets.statMeanGameReward.get_PI(0.05))
 
+# distribution of reward from playing the game 10 times
 Fig.graph_histogram(
-    data = trial.get_reward_list(),
-    title = 'Histogram of rewards from 1000 Games obtained from steady state simulation model',
-    x_label='Game Rewards',
-    y_label='Frequency'
-)
+    data=multipleGameSets.meanGameReward,
+    bin_width=10,
+    title='Reward from playing the game 10 times',
+    x_label='Mean Rewards',
+    y_label='Count')
+
+print('We need a transient-state simulation for this perspective.')
+print('We are not able to rely on the Law of Large Numbers to make inference because our data is very limited.')
+print('Therefore, we must use the sample mean and projection intervals for interpretation.')

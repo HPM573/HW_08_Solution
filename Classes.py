@@ -2,129 +2,116 @@ import numpy as np
 import SimPy.StatisticalClasses as Stat
 
 
-class Game(object):
+class Game:
     def __init__(self, id, prob_head):
-        self._id= id
-        self._rnd = np.random
-        self._rnd.seed(id)
-        self._probHead = prob_head
-        self._countWins = 0
-
-    def simulate(self, n_of_flips):
-
-        count_tails = 0 #number of consecutive tails so far, set to 0
-
-        for i in range(n_of_flips):
-            if self._rnd.random_sample() < self._probHead:
-                if count_tails >= 2:
-                    self._countWins += 1
-                count_tails = 0
-
-            else:
-                count_tails += 1
-
-    def get_reward(self):
-        return 100*self._countWins - 250
-
-class SetOfGames:
-    def __init__(self, id, prob_head, n_games):
         self.id = id
-        self._gameRewards = []
-        self.count_loss = []
-        self._num_loss = 0 #number of losses; start with zero
-        self.n_games = n_games
-        self.prob_head = prob_head
+        self.rnd = np.random.RandomState(seed=id)
+        self.probHead = prob_head
+        self.countWins = 0
 
     def simulate(self):
-        for n in range(self.n_games):
-            #create a new game
-            game = Game(id=self.id*self.n_games+n, prob_head=self.prob_head)
-            #simulate the game with 20 flips
-            game.simulate(20)
-            #store the reward
-            self._gameRewards.append(game.get_reward())
+        """
+        simulates 20 coin tosses and counts the number of times {T, T, H} occurred
+        """
 
-        for k in self._gameRewards:
-            if k < 0:
-                i=1
-                self.count_loss.append(i)
+        n_consecutive_tails = 0  # number of consecutive tails so far, set to 0
+
+        # flip the coin 20 times
+        for i in range(20):
+
+            # find if this flip resulted in head or tail
+            if self.rnd.random_sample() < self.probHead:
+
+                # if it is head, check if the last 2 tosses resulted in {T, T}
+                if n_consecutive_tails >= 2:
+                    # if so, {T, T, H} has occurred
+                    self.countWins += 1
+
+                # if this is tail, we set the number of consecutive tails to 0
+                n_consecutive_tails = 0
+
             else:
-                i=0
-                self.count_loss.append(i)
+                # this flip resulted in tail, so we increment the number of consecutive tails by 1
+                n_consecutive_tails += 1
 
-        return SetOfGamesOutcomes(self)
+    def get_reward(self):
+        """
+        :return: the reward from this game = 100 * (number of {T, T, H}) - 250
+        """
+        return 100 * self.countWins - 250
 
 
-    def get_reward_list(self):
-        return self._gameRewards
+class SetOfGames:
+    def __init__(self, id, prob_head):
 
-    def get_loss_list(self):
-        return self.count_loss
+        self.id = id
+        self.probHead = prob_head
+        self.gameRewards = []
+        self.gameIfLoss = []  # list of 0 and 1, where represents loss and 0 represents win.
+        self.outcomes = None
+
+    def simulate(self, n_games):
+
+        for i in range(n_games):
+            # create a new game
+            game = Game(id=self.id*n_games+i, prob_head=self.probHead)
+            # simulate the game with 20 flips
+            game.simulate()
+            # get the reward
+            reward = game.get_reward()
+            # store the reward
+            self.gameRewards.append(reward)
+            # find if we lost in this game
+            if reward < 0:
+                self.gameIfLoss.append(1)
+            else:
+                self.gameIfLoss.append(0)
+
+        self.outcomes = SetOfGamesOutcomes(game_rewards=self.gameRewards, game_if_loss=self.gameIfLoss)
 
 
 class SetOfGamesOutcomes:
-    def __init__(self, simulated_cohort):
+    def __init__(self, game_rewards, game_if_loss):
 
-        self.simulatedCohort = simulated_cohort
-        self.sumStat_gameRewards = Stat.SummaryStat('Reward List', self.simulatedCohort.get_reward_list())
-        self.sumStat_gameProbLoss = Stat.SummaryStat('Probability  of loss', self.simulatedCohort.get_loss_list())
+        self.statRewards = Stat.SummaryStat('Reward', game_rewards)
+        self.statIfLoss = Stat.SummaryStat('Probability  of loss', game_if_loss)
 
     def get_ave_reward(self):
-        return self.sumStat_gameRewards.get_mean()
+        return self.statRewards.get_mean()
 
-    def get_CI_reward(self,alpha):
-        return self.sumStat_gameRewards.get_t_CI(alpha)
+    def get_CI_reward(self, alpha):
+        return self.statRewards.get_t_CI(alpha)
 
     def get_min_reward(self):
-        return self.sumStat_gameRewards.get_min()
+        return self.statRewards.get_min()
 
     def get_max_reward(self):
-        return self.sumStat_gameRewards.get_max()
+        return self.statRewards.get_max()
 
     def get_loss_prob(self):
-        return self.sumStat_gameProbLoss.get_mean()
+        return self.statIfLoss.get_mean()
 
-    def get_CI_probLoss(self,alpha):
-        return self.sumStat_gameProbLoss.get_t_CI(alpha)
+    def get_CI_prob_Loss(self, alpha):
+        return self.statIfLoss.get_t_CI(alpha)
 
 
 class MultipleGameSets:
-    def __init__(self, ids, prob_head, n_games):
+    def __init__(self, ids, prob_head):
         self.ids = ids
-        self.probs_head = prob_head
-        self.num_games = n_games
+        self.probHead = prob_head
 
-        self.game_rewards = []
         self.meanGameReward = []
-        self.sumStat_meanGameReward = None
+        self.statMeanGameReward = None
 
-    def simulation(self):
+    def simulate(self, num_games):
+
         for i in self.ids:
-            setofGames = SetOfGames(i, self.probs_head, self.num_games)
-            setofGames.simulate()
-            self.game_rewards.append(setofGames.get_reward_list())
-            self.meanGameReward.append(setofGames.simulate().get_ave_reward())
+            set_of_games = SetOfGames(id=i, prob_head=self.probHead)
+            set_of_games.simulate(n_games=num_games)
 
-        self.sumStat_meanGameReward = Stat.SummaryStat('Mean Rewards', self.meanGameReward)
+            self.meanGameReward.append(set_of_games.outcomes.get_ave_reward())
 
-    def get_setofgames_meanrewards(self,index):
-        return self.meanGameReward[index]
+        self.statMeanGameReward = Stat.SummaryStat('Mean Rewards', self.meanGameReward)
 
-    def get_setofgames_CI_meanreward(self,index, alpha):
-        stats = Stat.SummaryStat('', self.game_rewards[index])
-        return stats.get_t_CI(alpha)
-
-    def get_all_meanrewards(self):
-        return self.meanGameReward
-
-    def get_overall_mean_reward(self):
-        return self.sumStat_meanGameReward.get_mean()
-
-    def get_cohort_PI_reward(self, index, alpha):
-        stats = Stat.SummaryStat('', self.game_rewards[index])
-        return stats.get_PI(alpha)
-
-    def get_PI_meanreward(self, alpha):
-        return self.sumStat_meanGameReward.get_PI(alpha)
 
 
