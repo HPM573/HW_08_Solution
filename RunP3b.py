@@ -6,17 +6,17 @@ multipleGameSets = Cls.MultipleGameSets(ids=range(5000), prob_head=0.5)
 # simulate all game sets
 multipleGameSets.simulate(n_games_in_set=10)
 
-# print projected mean reward
-print('Projected mean reward',
-      multipleGameSets.statMeanGameReward.get_mean())
+# print projected reward
+print('Projected reward',
+      multipleGameSets.statGameRewards.get_mean())
 # print projection interval
 print('95% projection interval of average rewards',
-      multipleGameSets.statMeanGameReward.get_PI(0.05))
+      multipleGameSets.statGameRewards.get_PI(0.05))
 
 # distribution of reward from playing the game 10 times
 Fig.graph_histogram(
-    data=multipleGameSets.meanGameReward,
-    bin_width=10,
+    data=multipleGameSets.gameSetRewards,
+    bin_width=100,
     title='Reward from playing the game 10 times',
     x_label='Mean Rewards',
     y_label='Count')

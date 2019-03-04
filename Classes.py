@@ -79,6 +79,9 @@ class SetOfGamesOutcomes:
     def get_ave_reward(self):
         return self.statRewards.get_mean()
 
+    def get_total_reward(self):
+        return self.statRewards.get_total()
+
     def get_CI_reward(self, alpha):
         return self.statRewards.get_t_CI(alpha)
 
@@ -100,8 +103,8 @@ class MultipleGameSets:
         self.ids = ids
         self.probHead = prob_head
 
-        self.meanGameReward = []
-        self.statMeanGameReward = None
+        self.gameSetRewards = []
+        self.statGameRewards = None
 
     def simulate(self, n_games_in_set):
 
@@ -109,9 +112,9 @@ class MultipleGameSets:
             set_of_games = SetOfGames(id=i, prob_head=self.probHead)
             set_of_games.simulate(n_games=n_games_in_set)
 
-            self.meanGameReward.append(set_of_games.outcomes.get_ave_reward())
+            self.gameSetRewards.append(set_of_games.outcomes.get_total_reward())
 
-        self.statMeanGameReward = Stat.SummaryStat('Mean Rewards', self.meanGameReward)
+        self.statGameRewards = Stat.SummaryStat('Mean Rewards', self.gameSetRewards)
 
 
 
