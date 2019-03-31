@@ -2,16 +2,16 @@ import Classes as Cls
 import SimPy.FigureSupport as Fig
 
 # create a multiple game sets
-multipleGameSets = Cls.MultipleGameSets(ids=range(5000), prob_head=0.5)
+multipleGameSets = Cls.MultipleGameSets(ids=range(1000), prob_head=0.5)
 # simulate all game sets
 multipleGameSets.simulate(n_games_in_set=10)
 
 # print projected reward
 print('Projected reward',
-      multipleGameSets.statGameRewards.get_mean())
+      multipleGameSets.statMultipleGameRewards.get_mean())
 # print projection interval
 print('95% projection interval of average rewards',
-      multipleGameSets.statGameRewards.get_PI(0.05))
+      multipleGameSets.statMultipleGameRewards.get_PI(0.05))
 
 # distribution of reward from playing the game 10 times
 Fig.graph_histogram(

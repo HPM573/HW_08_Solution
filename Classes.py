@@ -67,7 +67,8 @@ class SetOfGames:
             else:
                 self.gameIfLoss.append(0)
 
-        self.outcomes = SetOfGamesOutcomes(game_rewards=self.gameRewards, game_if_loss=self.gameIfLoss)
+        self.outcomes = SetOfGamesOutcomes(game_rewards=self.gameRewards,
+                                           game_if_loss=self.gameIfLoss)
 
 
 class SetOfGamesOutcomes:
@@ -104,7 +105,7 @@ class MultipleGameSets:
         self.probHead = prob_head
 
         self.gameSetRewards = []
-        self.statGameRewards = None
+        self.statMultipleGameRewards = None
 
     def simulate(self, n_games_in_set):
 
@@ -114,7 +115,4 @@ class MultipleGameSets:
 
             self.gameSetRewards.append(set_of_games.outcomes.get_total_reward())
 
-        self.statGameRewards = Stat.SummaryStat('Mean Rewards', self.gameSetRewards)
-
-
-
+        self.statMultipleGameRewards = Stat.SummaryStat('Mean Rewards', self.gameSetRewards)
