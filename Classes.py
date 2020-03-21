@@ -47,7 +47,7 @@ class SetOfGames:
         self.id = id
         self.probHead = prob_head
         self.gameRewards = []
-        self.gameIfLoss = []  # list of 0 and 1, where represents loss and 0 represents win.
+        self.gameIfLoss = []  # list of 0 and 1, where 1 represents loss and 0 represents win.
         self.statRewards = None # stat to collect total rewards
         self.statIfLoss = None  # stat to collect number of losses
 
