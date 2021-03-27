@@ -8,10 +8,10 @@ multipleGameSets.simulate(n_games_in_set=10)
 
 # print projected reward
 print('Projected reward',
-      multipleGameSets.statMultipleGameRewards.get_mean())
+      multipleGameSets.statGameSetRewards.get_mean())
 # print projection interval
 print('95% projection interval of average rewards',
-      multipleGameSets.statMultipleGameRewards.get_PI(0.05))
+      multipleGameSets.statGameSetRewards.get_PI(0.05))
 
 # distribution of reward from playing the game 10 times
 Hist.plot_histogram(
