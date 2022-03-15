@@ -7,7 +7,7 @@ multipleGameSets = Cls.MultipleGameSets(ids=range(1000), prob_head=0.5)
 multipleGameSets.simulate(n_games_in_set=10)
 
 # print projected reward
-print('Projected reward',
+print('Projected reward from playing the game 20 times:',
       multipleGameSets.statGameSetRewards.get_mean())
 # print projection interval
 print('95% projection interval of average rewards',
