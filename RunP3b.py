@@ -1,5 +1,6 @@
+import deampy.plots.histogram as hist
+
 import Classes as Cls
-import SimPy.Plots.Histogram as Hist
 
 # create a multiple game sets
 multipleGameSets = Cls.MultipleGameSets(ids=range(1000), prob_head=0.5)
@@ -14,7 +15,7 @@ print('95% projection interval of average rewards',
       multipleGameSets.statGameSetRewards.get_PI(0.05))
 
 # distribution of reward from playing the game 10 times
-Hist.plot_histogram(
+hist.plot_histogram(
     data=multipleGameSets.gameSetRewards,
     bin_width=100,
     title='Reward from playing the game 10 times',
