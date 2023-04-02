@@ -22,7 +22,6 @@ hist.plot_histogram(
     x_label='Mean Rewards',
     y_label='Count')
 
-print('We need a transient-state simulation for this perspective.')
 print('We are not able to rely on the Law of Large Numbers to make inference because '
       'the gambler gets to play this game only 10 times.')
 print('Therefore, we must use the sample mean and projection intervals for interpretation.')
