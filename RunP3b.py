@@ -22,6 +22,10 @@ hist.plot_histogram(
     x_label='Mean Rewards',
     y_label='Count')
 
-print('We are not able to rely on the Law of Large Numbers to make inference because '
-      'the gambler gets to play this game only 10 times.')
-print('Therefore, we must use the sample mean and projection intervals for interpretation.')
+
+print('Since the gambler gets to play this game only 10 times, '
+      'knowing the distribution of the '
+      'reward from these 10 games is important.'
+      '\nTherefore, we provide the gambler with the '
+      'sample mean of the reward and the projection interval to communicate the uncertainty in the possible '
+      'reward after playing the game 10 times.')

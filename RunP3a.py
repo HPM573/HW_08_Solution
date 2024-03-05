@@ -9,5 +9,5 @@ print('The 95% CI is', setOfGames.statRewards.get_t_CI(0.05))
 
 print('Since the casio owner gets to play this game many time', 
       'we are able to rely on the Law of Large Numbers to make inference about '
-      'home much the casino owner could make from each gambler.')
+      'how much money the casino owner could make on average from each gambler.')
 print('This lets us use the sample mean and confidence intervals for interpretation.')
